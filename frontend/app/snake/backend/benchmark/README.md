@@ -16,7 +16,7 @@
 ## 运行
 
 ```bash
-cd snake/build
+cd frontend/app/snake/backend/build
 make bench_snake
 ./output/bench/bench_snake
 ```

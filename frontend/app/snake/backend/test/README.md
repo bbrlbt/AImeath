@@ -28,7 +28,7 @@
 ## 运行
 
 ```bash
-cd snake/build
+cd frontend/app/snake/backend/build
 make tests
 ./output/test/tests
 ```

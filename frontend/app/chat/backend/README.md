@@ -7,15 +7,22 @@ C++17 实现的文本处理模块，编译为共享库 `libchat.so`，通过 `dl
 ## 目录结构
 
 ```
-├── include/          头文件
-│   └── chat.hpp      Chat 类、C API
-├── src/              源文件实现
-│   └── chat.cpp
-├── test/             单元测试（Google Test）
-│   └── chat_test.cpp
-├── benchmark/        性能基准测试（Google Benchmark）
-│   └── chat_bench.cpp
-└── CMakeLists.txt    构建配置
+frontend/app/chat/
+├── backend/
+│   ├── include/          头文件
+│   │   └── chat.hpp      Chat 类、C API
+│   ├── src/              源文件实现
+│   │   └── chat.cpp
+│   ├── test/             单元测试（Google Test）
+│   │   └── chat_test.cpp
+│   ├── benchmark/        性能基准测试（Google Benchmark）
+│   │   └── chat_bench.cpp
+│   ├── test_build.sh     快速构建脚本
+│   └── CMakeLists.txt    构建配置
+├── frontend/
+│   ├── ChatPage.vue      Vue 页面组件
+│   └── config.js         应用配置
+└── README.md             （本文档）
 ```
 
 ## 依赖
@@ -31,13 +38,13 @@ C++17 实现的文本处理模块，编译为共享库 `libchat.so`，通过 `dl
 
 ```bash
 # 独立构建
-cd module/chat
+cd frontend/app/chat/backend
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 
 # 根项目构建
-cd lab
+cd ../../../../
 ./build.sh
 ```
 
@@ -61,8 +68,14 @@ cd build
 - C API 接收 `char* (*)(const char*)`，内部包装为 `std::function`，自动管理 C 字符串内存
 - `chat_process()` 返回 `malloc` 分配的 C 字符串，调用者负责释放
 - 支持多个独立实例并行处理
-- 游戏服务器（`backend/main.cpp`）通过 `dlopen` 加载 `libchat.so`，在 `/chat` 路径提供 WebSocket 聊天服务
-- 前端 `ChatPage.vue` 通过 `/chat` 路径连接，气泡聊天室风格
+- 游戏服务器（项目根目录 `backend/main.cpp`）通过 `dlopen` 加载 `libchat.so`，在 `/chat` 路径提供 WebSocket 聊天服务
+- 前端页面 `../frontend/ChatPage.vue` 通过 `/chat` 路径连接，气泡聊天室风格
+
+## 前端页面
+
+Vue 页面组件位于 `../frontend/ChatPage.vue`，通过 WebSocket 连接后端聊天服务器，提供实时消息发送和接收功能。
+
+页面配置见 `../frontend/config.js`。
 
 ## 相关文档
 
@@ -70,3 +83,4 @@ cd build
 - [src/README.md](src/README.md) — 源文件实现
 - [test/README.md](test/README.md) — 单元测试
 - [benchmark/README.md](benchmark/README.md) — 性能基准测试
+- [../frontend/README.md](../frontend/README.md) — 前端页面说明

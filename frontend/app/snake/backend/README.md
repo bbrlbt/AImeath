@@ -1,30 +1,34 @@
 # snake/ —— 贪食蛇游戏
 
-C++17 实现的终端贪食蛇游戏，编译为共享库 `libsnake.so`，通过 `dlopen` 动态加载。
+C++17 实现的贪食蛇游戏，编译为共享库 `libsnake.so`，通过 `dlopen` 动态加载。
 
 ## 目录结构
 
 ```
-├── include/          头文件
-│   ├── snake.hpp     Snake 实体（运动、碰撞）
-│   ├── board.hpp     游戏面板（网格、食物生成）
-│   └── game.hpp      游戏主循环、extern "C" 入口
-├── src/              源文件实现
-│   ├── snake.cpp
-│   ├── board.cpp
-│   └── game.cpp
-├── test/             单元测试（Google Test）
-│   ├── snake_test.cpp
-│   └── README.md
-├── benchmark/        性能基准测试（Google Benchmark）
-│   ├── snake_bench.cpp
-│   └── README.md
-├── build/            构建输出目录
-│   ├── output/lib/   共享库文件
-│   ├── output/test/  测试可执行文件
-│   └── output/bench/ 基准测试可执行文件
-├── test_build.sh     快速构建脚本
-└── CMakeLists.txt    构建配置
+frontend/app/snake/
+├── backend/
+│   ├── include/          头文件
+│   │   ├── snake.hpp     Snake 实体（运动、碰撞）
+│   │   ├── board.hpp     游戏面板（网格、食物生成）
+│   │   └── game.hpp      游戏主循环、extern "C" 入口
+│   ├── src/              源文件实现
+│   │   ├── snake.cpp
+│   │   ├── board.cpp
+│   │   └── game.cpp
+│   ├── test/             单元测试（Google Test）
+│   │   └── snake_test.cpp
+│   ├── benchmark/        性能基准测试（Google Benchmark）
+│   │   └── snake_bench.cpp
+│   ├── build/            构建输出目录
+│   │   ├── output/lib/   共享库文件
+│   │   ├── output/test/  测试可执行文件
+│   │   └── output/bench/ 基准测试可执行文件
+│   ├── test_build.sh     快速构建脚本
+│   └── CMakeLists.txt    构建配置
+├── frontend/
+│   ├── GamePage.vue      Vue 页面组件
+│   └── config.js         应用配置
+└── README.md             （本文档）
 ```
 
 ## 依赖
@@ -41,13 +45,13 @@ C++17 实现的终端贪食蛇游戏，编译为共享库 `libsnake.so`，通过
 
 ```bash
 # 独立构建
-cd snake
+cd frontend/app/snake/backend
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 
 # 快速构建（使用脚本）
-cd snake
+cd frontend/app/snake/backend
 ./test_build.sh
 ```
 
@@ -101,9 +105,16 @@ cd build
 - `extern "C"` API 与 gomoku/pacman 模块一致，支持 `dlopen` / `dlsym` 动态加载
 - `atexit()` 注册终端恢复，确保异常退出时回显和光标恢复正常
 
+## 前端页面
+
+Vue 页面组件位于 `../frontend/GamePage.vue`，通过 WebSocket 连接后端游戏服务器，使用 `useGame('snake')` 组合式函数管理游戏状态。方向键/WASD 操控蛇移动。
+
+页面配置见 `../frontend/config.js`。
+
 ## 相关文档
 
 - [include/README.md](include/README.md) — 头文件说明
 - [src/README.md](src/README.md) — 源文件实现
 - [test/README.md](test/README.md) — 单元测试
 - [benchmark/README.md](benchmark/README.md) — 性能基准测试
+- [../frontend/README.md](../frontend/README.md) — 前端页面说明

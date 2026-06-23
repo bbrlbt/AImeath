@@ -2,18 +2,15 @@ import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import App from './App.vue'
 import HomePage from './views/HomePage.vue'
-import GamePage from './views/GamePage.vue'
-import ChatPage from './views/ChatPage.vue'
-import { INFO } from './config/games.js'
+import { APPS } from './config/games.js'
 
 const routes = [
   { path: '/', component: HomePage },
-  ...Object.keys(INFO).map(key => ({
+  ...Object.keys(APPS).map(key => ({
     path: `/${key}`,
-    component: GamePage,
+    component: APPS[key].page,
     props: { gameType: key },
   })),
-  { path: '/chat', component: ChatPage },
 ]
 
 const router = createRouter({

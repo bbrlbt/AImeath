@@ -1,0 +1,72 @@
+<template>
+  <div class="game-page">
+    <h1>{{ gameName }}</h1>
+    <div class="controls">
+      <button @click="startGame" :disabled="!!socket">Start</button>
+      <button @click="togglePause" :disabled="!socket || gameState.gameOver">{{ paused ? 'Resume' : 'Pause' }}</button>
+      <button @click="endGame" :disabled="!socket">End</button>
+      <button @click="goPass" :disabled="!socket || gameState.gameOver">虚着</button>
+      <button @click="goResign" :disabled="!socket || gameState.gameOver">认输</button>
+    </div>
+    <div class="go-info" v-if="socket">
+      <span>回合: <b :class="turnClass">{{ turnLabel }}</b></span>
+      <span>虚着: {{ gameState.passes }}</span>
+      <span>提子: B{{ gameState.capsB }} W{{ gameState.capsW }}</span>
+      <span>贴目: {{ gameState.komi }}</span>
+      <span v-if="gameState.marking" class="marking-ctrl">
+        <button @click="clearDeadMarks">清除标记</button>
+        <button @click="confirmDead" class="confirm-btn">确认死子</button>
+      </span>
+    </div>
+    <div class="error-msg" v-if="errorMsg">{{ errorMsg }}</div>
+    <div class="error-msg" v-else-if="reconnecting">重连中 ({{ reconnecting }}/5)...</div>
+    <div class="status" v-else-if="socket && !rows.length && !gameState.gameOver">连接中...</div>
+    <div class="grid-wrapper" v-if="rows.length">
+      <div class="grid" :style="gridStyle" @click="handleGridClick">
+        <div v-for="(cell,i) in cells" :key="i" class="cell" :class="cellClass(i)" :style="cellStyle(cell)" :title="`(${Math.floor(i / gridW)}, ${i % gridW})`"></div>
+      </div>
+    </div>
+    <div class="status" v-if="gameState.gameOver && !gameState.marking">{{ winnerText }}</div>
+    <div class="key-hint" v-if="!gameState.marking">Click to place · P 虚着 R 认输</div>
+    <div class="key-hint" v-if="gameState.marking">点击棋子标记死子 → 确认死子</div>
+  </div>
+</template>
+
+<script setup>
+import { useGame } from '../../../src/composables/useGame.js'
+import { info } from './config.js'
+
+const props = defineProps({ gameType: { type: String, required: true } })
+
+const {
+  socket, errorMsg, reconnecting, paused, gameState,
+  gameName, rows, gridW, gridH, cells, gridStyle, winnerText,
+  turnLabel, turnClass,
+  startGame, endGame, togglePause, handleGridClick,
+  goPass, goResign, clearDeadMarks, confirmDead,
+  cellStyle, cellClass,
+} = useGame(props.gameType)
+</script>
+
+<style scoped>
+.game-page { text-align: center; font-family: monospace; background: #1a1a2e; color: #eee; min-height: 100vh; padding: 20px; }
+h1 { margin: 0 0 16px; font-size: 24px; }
+.controls { margin-bottom: 16px; display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.controls button { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; background: #4CAF50; color: #fff; }
+.controls button:disabled { opacity: 0.4; cursor: default; }
+.controls button:not(:disabled):hover { opacity: 0.8; }
+.go-info { margin-bottom: 16px; display: flex; gap: 20px; justify-content: center; font-size: 14px; color: #ccc; flex-wrap: wrap; }
+.go-info span { white-space: nowrap; }
+.turn-black { color: #bbb; } .turn-white { color: #fff; }
+.error-msg { margin-bottom: 12px; padding: 8px 16px; background: #f44336; color: #fff; border-radius: 4px; display: inline-block; font-size: 14px; }
+.grid-wrapper { display: inline-block; padding: 10px; background: #222; border-radius: 8px; max-width: 100%; overflow-x: auto; }
+.grid { display: inline-grid; gap: 1px; cursor: pointer; }
+.cell { width: 24px; height: 24px; }
+.cell-dead { opacity: 0.35; outline: 2px dashed #f44336; outline-offset: -2px; }
+.marking-hint { color: #f44336; }
+.marking-ctrl { display: flex; gap: 6px; }
+.marking-ctrl button { padding: 4px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; background: #555; color: #fff; }
+.marking-ctrl .confirm-btn { background: #f44336; }
+.status { margin-top: 16px; font-size: 20px; color: #FF9800; font-weight: bold; }
+.key-hint { margin-top: 12px; color: #888; font-size: 12px; }
+</style>

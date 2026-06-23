@@ -5,17 +5,24 @@ C++17 实现的五子棋游戏，编译为共享库 `libgomoku.so`，通过 `dlo
 ## 目录结构
 
 ```
-├── include/          头文件
-│   ├── board.hpp     棋盘网格（Cell 枚举、落子、查询）
-│   └── game.hpp      Game 类、C API
-├── src/              源文件实现
-│   ├── board.cpp
-│   └── game.cpp
-├── test/             单元测试（Google Test）
-│   └── gomoku_test.cpp
-├── benchmark/        性能基准测试（Google Benchmark）
-│   └── gomoku_bench.cpp
-└── CMakeLists.txt    构建配置
+frontend/app/gomoku/
+├── backend/
+│   ├── include/          头文件
+│   │   ├── board.hpp     棋盘网格（Cell 枚举、落子、查询）
+│   │   └── game.hpp      Game 类、C API
+│   ├── src/              源文件实现
+│   │   ├── board.cpp
+│   │   └── game.cpp
+│   ├── test/             单元测试（Google Test）
+│   │   └── gomoku_test.cpp
+│   ├── benchmark/        性能基准测试（Google Benchmark）
+│   │   └── gomoku_bench.cpp
+│   ├── test_build.sh     快速构建脚本
+│   └── CMakeLists.txt    构建配置
+├── frontend/
+│   ├── GamePage.vue      Vue 页面组件
+│   └── config.js         应用配置
+└── README.md             （本文档）
 ```
 
 ## 规则
@@ -38,13 +45,13 @@ C++17 实现的五子棋游戏，编译为共享库 `libgomoku.so`，通过 `dlo
 
 ```bash
 # 独立构建
-cd module/gomoku
+cd frontend/app/gomoku/backend
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 
-# 根项目构建（含 demo）
-cd lab
+# 根项目构建
+cd ../../../../
 ./build.sh
 ```
 
@@ -71,9 +78,16 @@ cd build
 - 非法落子（越界、重复）被忽略，不切换玩家
 - 游戏结束后所有 tick 被忽略，分数保持不变
 
+## 前端页面
+
+Vue 页面组件位于 `../frontend/GamePage.vue`，通过 WebSocket 连接后端游戏服务器，使用 `useGame('gomoku')` 组合式函数管理游戏状态。点击棋盘落子。
+
+页面配置见 `../frontend/config.js`。
+
 ## 相关文档
 
 - [include/README.md](include/README.md) — 头文件说明
 - [src/README.md](src/README.md) — 源文件实现
 - [test/README.md](test/README.md) — 单元测试
 - [benchmark/README.md](benchmark/README.md) — 性能基准测试
+- [../frontend/README.md](../frontend/README.md) — 前端页面说明

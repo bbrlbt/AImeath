@@ -1,39 +1,37 @@
-export const INFO = {
-  snake:   { name: 'Snake', clickGame: false },
-  gomoku:  { name: 'Gomoku', clickGame: true },
-  pacman:  { name: 'Pac-Man', clickGame: false },
-  go:      { name: '围棋', size: 19, clickGame: true, isGo: true },
+import SnakePage from '@apps/snake/frontend/GamePage.vue'
+import PacmanPage from '@apps/pacman/frontend/GamePage.vue'
+import GomokuPage from '@apps/gomoku/frontend/GamePage.vue'
+import GoPage from '@apps/go/frontend/GamePage.vue'
+import ChatPage from '@apps/chat/frontend/ChatPage.vue'
+
+import { info as snakeInfo, styles as snakeStyles, meta as snakeMeta } from '@apps/snake/frontend/config.js'
+import { info as pacmanInfo, styles as pacmanStyles, meta as pacmanMeta } from '@apps/pacman/frontend/config.js'
+import { info as gomokuInfo, styles as gomokuStyles, meta as gomokuMeta } from '@apps/gomoku/frontend/config.js'
+import { info as goInfo, styles as goStyles, meta as goMeta } from '@apps/go/frontend/config.js'
+import { info as chatInfo, styles as chatStyles, meta as chatMeta } from '@apps/chat/frontend/config.js'
+
+export const APPS = {
+  snake:   { info: snakeInfo, styles: snakeStyles, meta: snakeMeta, page: SnakePage },
+  pacman:  { info: pacmanInfo, styles: pacmanStyles, meta: pacmanMeta, page: PacmanPage },
+  gomoku:  { info: gomokuInfo, styles: gomokuStyles, meta: gomokuMeta, page: GomokuPage },
+  go:      { info: goInfo, styles: goStyles, meta: goMeta, page: GoPage },
+  chat:    { info: chatInfo, styles: chatStyles, meta: chatMeta, page: ChatPage },
 }
 
-export const STYLES = {
-  snake: {
-    O: { background: '#4CAF50', borderRadius: '4px' },
-    '#': { background: '#2E7D32' },
-    $: { background: '#f44336', borderRadius: '50%' },
-    ' ': { background: '#111' },
-  },
-  gomoku: {
-    '.': { background: '#DEB887' },
-    B: { background: '#222', borderRadius: '50%' },
-    W: { background: '#fff', borderRadius: '50%', border: '1px solid #888' },
-  },
-  pacman: {
-    '@': { background: '#FFEB3B', borderRadius: '50%' },
-    '*': { background: '#fff', borderRadius: '50%' },
-    ' ': { background: '#111' },
-  },
-  go: {
-    '.': { background: '#DEB887' },
-    B: { background: '#1a1a1a', borderRadius: '50%', boxShadow: '0 0 2px rgba(255,255,255,0.2)' },
-    W: { background: '#f5f5f5', borderRadius: '50%', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' },
-  },
-}
+export const INFO = Object.fromEntries(
+  Object.entries(APPS).map(([k, v]) => [k, v.info])
+)
+
+export const STYLES = Object.fromEntries(
+  Object.entries(APPS).map(([k, v]) => [k, v.styles])
+)
+
+export const META = Object.fromEntries(
+  Object.entries(APPS).map(([k, v]) => [k, v.meta])
+)
 
 export const GO_ACTIONS = {
-  PASS: -1,
-  RESIGN: -2,
-  CLEAR_DEAD: -3,
-  CONFIRM_DEAD: -4,
+  PASS: -1, RESIGN: -2, CLEAR_DEAD: -3, CONFIRM_DEAD: -4,
 }
 
 export const KEY_MAP = {

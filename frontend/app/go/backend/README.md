@@ -21,17 +21,22 @@ C++17 实现的围棋游戏，编译为共享库 `libgo.so`，通过 `GameModule
 ## 目录结构
 
 ```
-├── include/         头文件
-│   ├── board.hpp    棋盘、气、提子、劫
-│   └── game.hpp     GoGame 类、常量
-├── src/             源文件
-│   ├── board.cpp
-│   └── game.cpp
-├── test/            单元测试（Google Test，12 用例）
-├── benchmark/       性能测试（Google Benchmark）
-├── test_build.sh    快速构建脚本
-├── CMakeLists.txt   构建配置
-└── README.md        本文档
+frontend/app/go/
+├── backend/
+│   ├── include/         头文件
+│   │   ├── board.hpp    棋盘、气、提子、劫
+│   │   └── game.hpp     GoGame 类、常量
+│   ├── src/             源文件
+│   │   ├── board.cpp
+│   │   └── game.cpp
+│   ├── test/            单元测试（Google Test，12 用例）
+│   ├── benchmark/       性能测试（Google Benchmark）
+│   ├── test_build.sh    快速构建脚本
+│   └── CMakeLists.txt   构建配置
+├── frontend/
+│   ├── GamePage.vue     Vue 页面组件
+│   └── config.js        应用配置
+└── README.md            本文档
 ```
 
 ## 依赖
@@ -46,7 +51,7 @@ C++17 实现的围棋游戏，编译为共享库 `libgo.so`，通过 `GameModule
 ## 构建
 
 ```bash
-cd go
+cd frontend/app/go/backend
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
@@ -81,3 +86,13 @@ int winner = game.score(); // 1=黑胜, 2=白胜
 - **劫检测**：基于 FNV-1a hash 的棋盘状态去重
 - **数子法**：flood-fill 计算每方围住的空点，边界接触异色石不计数
 - **自杀检测**：使用棋盘副本模拟，避免 const_cast
+
+## 前端页面
+
+Vue 页面组件位于 `../frontend/GamePage.vue`，通过 WebSocket 连接后端游戏服务器，使用 `useGame('go')` 组合式函数管理游戏状态。点击棋盘落子，支持虚着（Pass）和认输（Resign）。
+
+页面配置见 `../frontend/config.js`。
+
+## 相关文档
+
+- [../frontend/README.md](../frontend/README.md) — 前端页面说明
