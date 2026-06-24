@@ -127,6 +127,7 @@ private:
         ws_->async_accept(req_,
             [self](beast::error_code ec) {
                 if (ec) return;
+                self->buf_.clear();
                 self->do_read_first_msg();
             });
     }
